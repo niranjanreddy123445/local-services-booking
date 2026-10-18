@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local Services | India</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fb;color:#17243a;
+font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#102c50,#087e8b);
+color:white;padding:25px 18px}
+header h1{margin:0 0 8px}
+header p{margin:0;color:#e1f6ff}
+main{max-width:900px;margin:auto;padding:18px}
+input,select,button{font:inherit}
+input,select{width:100%;padding:13px;margin:7px 0;
+border:1px solid #d2dbe6;border-radius:10px;background:white}
+h2{font-size:20px;margin-top:25px}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.cat{background:white;color:#17243a;border:1px solid #e0e7ef;
+border-radius:12px;padding:13px 4px;cursor:pointer}
+.cat span{display:block;font-size:25px;margin-bottom:7px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}
+.card,form{background:white;border:1px solid #e0e7ef;
+padding:16px;border-radius:14px}
+.card h3{margin:8px 0}
+.muted{font-size:14px;color:#637187}
+.price{font-weight:bold;font-size:19px;margin:12px 0}
+button.primary,.card button{background:#087e8b;color:white;
+border:0;padding:12px;border-radius:9px;cursor:pointer}
+.card button{width:100%}
+form button{width:100%;margin-top:10px}
+footer{text-align:center;padding:25px;color:#637187}
+</style>
+</head>
+<body>
+<header>
+<h1>Local Services</h1>
+<p>Find help. Book easily. Live conveniently.</p>
+</header>
+<main>
+<input id="city" placeholder="Enter your city">
+<input id="search" placeholder="Search for a service...">
+<h2>Explore Services</h2>
+<div class="categories" id="categories"></div>
+<h2>Service Providers</h2>
+<p class="muted">Demo listings. Providers are not yet verified.</p>
+<div class="cards" id="providers"></div>
+<h2>Request a Booking</h2>
+<form id="booking">
+<label>Your name<input name="name" required placeholder="Full name"></label>
+<label>Mobile number<input name="phone" required
+inputmode="numeric" pattern="[0-9]{10}" maxlength="10"
+placeholder="10-digit number"></label>
+<label>Service<select name="service" id="service"></select></label>
+<label>Date<input name="date" id="date" type="date" required></label>
+<label>Time
+<select name="time">
+<option>9 AM – 12 PM</option>
+<option>12 PM – 3 PM</option>
+<option>3 PM – 6 PM</option>
+</select></label>
+<label>Address or locality<input name="address" required
+placeholder="Area and city"></label>
+<button class="primary" type="submit">Request Booking</button>
+</form>
+<h2>Booking Status</h2>
+<p id="status" class="muted">No demo booking yet.</p>
+</main>
+<footer>Local Services · Prototype 1.0</footer>
+<script>
+const services=[
+{name:"Electrician",icon:"⚡",price:299},
+{name:"Cleaning",icon:"🧹",price:499},
+{name:"Plumber",icon:"🔧",price:249},
+{name:"Tutor",icon:"📚",price:399},
+{name:"Mechanic",icon:"🛠️",price:349},
+{name:"Appliance Repair",icon:"🔌",price:299}
+];
+const cats=document.getElementById("categories");
+const cards=document.getElementById("providers");
+const select=document.getElementById("service");
+const search=document.getElementById("search");
+let category="";
+services.forEach(s=>{
+cats.innerHTML+=`<button type="button" class="cat"
+data-category="${s.name}"><span>${s.icon}</span>${s.name}</button>`;
+select.innerHTML+=`<option>${s.name}</option>`;
+});
+function render(){
+const q=search.value.toLowerCase();
+const list=services.filter(s=>s.name.toLowerCase().includes(q));
+cards.innerHTML=list.map((s,i)=>`
+<article class="card">
+<div style="font-size:28px">${s.icon}</div>
+<h3>${s.name}</h3>
+<p class="muted">Sample Provider ${i+1}</p>
+<p class="muted">📍 Availability needs confirmation</p>
+<div class="price">From ₹${s.price}</div>
+<button type="button" data-book="${s.name}">Book Now</button>
+</article>`).join("")||"<p>No matching services.</p>";
+}
+cats.addEventListener("click",e=>{
+const b=e.target.closest("[data-category]");
+if(!b)return;
+category=b.dataset.category;
+search.value=category;
+select.value=category;
+render();
+});
+cards.addEventListener("click",e=>{
+const b=e.target.closest("[data-book]");
+if(!b)return;
+select.value=b.dataset.book;
+document.getElementById("booking").scrollIntoView({behavior:"smooth"});
+});
+search.addEventListener("input",render);
+const date=document.getElementById("date");
+date.min=new Date().toLocaleDateString("en-CA");
+document.getElementById("booking").addEventListener("submit",e=>{
+e.preventDefault();
+const d=new FormData(e.target);
+const city=document.getElementById("city").value.trim();
+if(!city){alert("Please enter your city.");return;}
+if(d.get("date")<date.min){alert("Choose today or a future date.");return;}
+document.getElementById("status").textContent=
+"DEMO REQUEST — Not sent to a real provider\n"+
+"Service: "+d.get("service")+"\nDate: "+d.get("date")+
+"\nTime: "+d.get("time")+"\nLocation: "+d.get("address")+", "+city+
+"\n\nThis prototype does not save bookings online.";
+e.target.reset();
+});
+render();
+</script>
+</body>
+</html>
