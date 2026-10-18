@@ -35,6 +35,12 @@ form button{width:100%;margin-top:10px}
 footer{text-align:center;padding:25px;color:#637187}
 </style>
 </head>
+<script type="module">
+  
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
   // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDuxvi7id_ZIdZHwYQI6MVM_BQMPss52-M",
@@ -45,6 +51,12 @@ const firebaseConfig = {
   appId: "1:207555901190:web:d2cdd275ca55b52e2c9087",
   measurementId: "G-WCCM5QRCE2"
 };
+ </script> 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+console.log("Firebase initialized");
+</script>
 <body>
 <header>
 <h1>Local Services</h1>
